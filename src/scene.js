@@ -4,42 +4,55 @@ var ready,count = 0;
 //===================================================================================
 var scenes = {};
 var shaderfiles = {};
+var voidfunc = function(){};
 function loadScene(sceneFile){
 
-    if(!scenes[sceneFile]){
-        var scene = sceneFile;
-        HttpRequest('assets/scene/' + sceneFile.replace('.json','')+'.json',null,
-        function(success){
-            scenes[scene] = JSON.parse(success);
-            return loadScene(scene);
-        });
-    }
-    else{
-        parseScene(scenes[sceneFile], function(scene){
-            var scene = scene;
-            if(!shaderfiles['shaders/pbr_shaders.txt']){
-                APP.renderer.loadShaders('shaders/pbr_shaders.txt',function(files){
-                    shaderfiles['shaders/pbr_shaders.txt'] = files;
-                    childrenShadersWithMaterialMacros(files,scene._root.getAllChildren(),
-                    function(){
-                        loadEnv(Environment,function(){
-                            WB.trigger('NewScene',scene);
-                        });
-                    })
-                });
-            }
-            
-            else{
-                childrenShadersWithMaterialMacros(shaderfiles['shaders/pbr_shaders.txt'],scene._root.getAllChildren(),
-                function(){
-                    loadEnv(Environment,function(){
-                        WB.trigger('NewScene',scene);
-                    });
-                })
-            }
-        });
+    var scenejson = null;
+    var f1 = function(){
+        if(!scenes[sceneFile])
+            HttpRequest('assets/scene/' + sceneFile.replace('.json','')+'.json',null,
+            function(success){
+                scenejson = JSON.parse(success);
+                scenes[sceneFile] = scenejson;
+                f2();f2=voidfunc;
+            });
+        else{
+            scenejson = scenes[sceneFile];
+            f2();f2=voidfunc;
+        }
     }
     
+    var newScene = null;
+    var f2 = function(){ 
+        parseScene(scenes[sceneFile], function(_scene){
+            newScene = _scene;
+            f3();f3=voidfunc;
+        });
+    }    
+
+    var f3 = function(){ 
+        if(!shaderfiles['shaders/pbr_shaders.txt'])
+            APP.renderer.loadShaders('shaders/pbr_shaders.txt',function(_files){
+                shaderfiles['shaders/pbr_shaders.txt'] = _files;
+                f4();f4=voidfunc;
+            });
+        else{
+            f4();f4=voidfunc;
+        }
+    }
+    var f4 = function(){ 
+        childrenShadersWithMaterialMacros(shaderfiles['shaders/pbr_shaders.txt'],newScene._root.getAllChildren(),
+        function(){
+            f5();f5=voidfunc;
+        });
+    }
+    var f5 = function(){ 
+        loadEnv(Environment,function(){
+            WB.trigger('NewScene',newScene);
+        });
+    }   
+    f1(); 
+
 }
 
 
@@ -150,7 +163,7 @@ function childrenShadersWithMaterialMacros(files, nodes, callback){
         shader = node.shader || 'phong';
         macros = {};
 
-        if(!materials[node.material] || gl.shaders[node.shader]) continue;
+        if(!materials[node.material]) continue;
 
         mat = sort(materials[node.material]);
         for(var p in mat){

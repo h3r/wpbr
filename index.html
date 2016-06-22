@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TFG: PBR in the Web</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>   
+    <div id="mycanvas"></div>
+    <div id="dropzone">DropZone</div>
+    <div id="hints">
+        
+        <div class="key"><span>front</span> W</div>
+        <div class="key"><span>left</span>  A</div>
+        <div class="key"><span>right</span> S</div>
+        <div class="key"><span>back</span>  D</div>
+        <div class="key"><span>up</span>    SPACE</div>
+        <div class="key"><span>down</span>  SHIFT</div>
+        <div class="key"><span>speed</span> CAPS</div>
+        <div class="key"><span>target</span>NPad 0</div>
+        <div class="key"><span>Magic</span> Q</div>
+    </div>
+    
+    <!-- third party libraries -->
+    <script type="text/javascript" src="lib/md5.js"></script>
+    <script type="text/javascript" src="lib/dat.gui.min.js"></script>
+    <script type="text/javascript" src="lib/rendeer.full.min.js"></script>
+
+    <!-- source files -->
+    <script type="text/javascript" src="src/tools.js"></script>
+    <script type="text/javascript" src="src/scene.js"></script>
+    <script type="text/javascript" src="src/core.js"></script>
+    <script type="text/javascript" src="src/gui.js"></script>
+    <script type="text/javascript" src="src/app.js"></script>
+    <script>init('mycanvas');</script>
+</body>
+</html>

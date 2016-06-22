@@ -1,0 +1,37 @@
+
+{
+    "cameras":[{
+        "eye":      [0.049890149384737015, 0.22326576709747314, 3.6333847045898438],
+        "center":   [0,0,0],
+        "up":       [0,1,0]
+        }
+    ],
+    "materials":[
+        {"id":"gold-leather","mat":{}}
+    ],
+    "nodes":[
+        {
+            "id":"Test Sphere Gold-Leather", 
+            "mesh":"meshes/test-sphere/h3r-testsphere.obj", 
+            "texture":"",
+            "config":{
+                "position": [0,0,0],
+                "rotation": [0,0,0],
+                "scale":    [0,0,0],
+                "children": [],
+                "uniforms": {}
+            },
+            "material":{
+                "id":"gold-leather",
+                "mat":{
+                    "albedo":   "meshes/test-sphere/textures/gold-leather/test2_None_BaseColor_SD.png",
+                    "roughness":"meshes/test-sphere/textures/gold-leather/test2_None_Roughness_SD.png",
+                    "metalness":"meshes/test-sphere/textures/gold-leather/test2_None_Metallic_SD.png",
+                    "ao":       [1,1,1],
+                    "bump":"meshes/test-sphere/textures/gold-leather/test2_None_Normal_SD.png"
+                }
+            },
+            "shader":"pbr"
+        }
+    ]
+}

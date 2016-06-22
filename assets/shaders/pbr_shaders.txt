@@ -1,0 +1,523 @@
+\shaders
+_env env.vs env.fs
+_pbr pbr.vs pbr.fs
+_brdf brdf.vs brdf.fs
+_prem prem.vs prem.fs
+
+\prem.vs
+//================================================================================================================================
+//  Prefilter Radiance Environment Map
+//================================================================================================================================
+precision highp float;
+attribute vec3 a_vertex;
+varying vec3 v_vertex;
+uniform mat4 u_inv_viewprojection_matrix;
+uniform float u_rotation;
+
+#import "rotationMatrix.inc"
+
+void main(){
+    v_vertex = (a_vertex * vec3(2.0)) - vec3(1.0);
+    v_vertex.z = 1.0;
+    gl_Position = vec4(v_vertex,1.0);
+    v_vertex = (u_inv_viewprojection_matrix * vec4(v_vertex,1.0) ).xyz ;
+    v_vertex = (rotationMatrix(vec3(0,1,0),u_rotation) * vec4(v_vertex,1.0)).xyz;
+}
+\prem.fs
+#extension GL_EXT_shader_texture_lod : enable
+#extension GL_OES_standard_derivatives : enable
+precision highp float;
+
+#define SAMPLES 512
+#define PI 3.1415926535897932384626433832795
+
+uniform float u_rotation;
+uniform float u_roughness;
+uniform mat4 u_inv_viewprojection_matrix;
+uniform samplerCube u_env_texture;
+
+#import "common.inc"
+#import "rotationMatrix.inc"
+#import "hammersley.inc"
+#import "importanceSampleGGX.inc"
+#import "prefilterEnvMap.inc"
+
+void main(){
+    gl_FragColor = vec4(PrefilterEnvMap(v_vertex,u_roughness), 1.0);
+}
+
+
+
+
+
+\env.vs
+//================================================================================================================================
+//  Renders Skybox
+//================================================================================================================================
+precision highp float;
+attribute vec3 a_vertex;
+varying vec3 v_vertex;
+uniform float u_rotation;
+uniform mat4 u_inv_viewprojection_matrix;
+
+#import "rotationMatrix.inc"
+
+void main(){
+    v_vertex = (a_vertex * vec3(2.0)) - vec3(1.0);
+    v_vertex.z = 1.0;
+    gl_Position = vec4(v_vertex,1.0);
+    v_vertex = (u_inv_viewprojection_matrix * vec4(v_vertex,1.0) ).xyz ;
+    v_vertex = (rotationMatrix(vec3(0,1,0),u_rotation) * vec4(v_vertex,1.0)).xyz;
+}
+\env.fs
+precision highp float;
+varying vec3 v_vertex;
+uniform samplerCube u_env_texture;
+
+void main(){
+    gl_FragColor = textureCube(u_env_texture, vec3(v_vertex.xy,v_vertex.z));
+}
+
+
+
+
+
+\pbr.vs
+//================================================================================================================================
+//  Physically Based Rendering  Split Sum Implementation
+//================================================================================================================================
+precision highp float;
+
+attribute vec3 a_vertex;
+attribute vec3 a_normal;
+attribute vec2 a_coord;
+#import "common.inc"
+
+void main(){
+    vec4 position = vec4(a_vertex,1.0);
+
+    v_vertex = (u_model * position).xyz;
+    v_normal = (u_model * vec4(a_normal,0.0)).xyz;
+    v_coord = a_coord;
+    
+    gl_Position = u_mvp * position;
+}
+
+\pbr.fs
+#extension GL_EXT_shader_texture_lod : enable
+#extension GL_OES_standard_derivatives : enable
+
+precision highp float;
+#import "math_constants.inc"
+#define SAMPLES 1024
+#define GAMMA 2.2
+
+#import "common.inc"
+uniform vec3 u_eye;
+uniform int  u_channel;
+uniform float u_rotation;
+
+uniform sampler2D u_brdf_texture;
+uniform samplerCube u_env_texture;
+uniform samplerCube u_env_1_texture;
+uniform samplerCube u_env_2_texture;
+uniform samplerCube u_env_3_texture;
+uniform samplerCube u_env_4_texture;
+uniform samplerCube u_env_5_texture;
+
+uniform sampler2D u_albedo_texture;
+uniform sampler2D u_emission_texture;
+uniform sampler2D u_roughness_texture;
+uniform sampler2D u_metalness_texture;
+uniform sampler2D u_ao_texture;
+uniform sampler2D u_bump_texture;
+
+uniform vec3 u_albedo;
+uniform vec3 u_emission;
+uniform float u_roughness;
+uniform float u_metalness;
+uniform vec3 u_ao;
+
+struct Material{
+    vec3 emission;   //texture2D || vec3
+    vec3 albedo;     //texture2D || vec3
+    vec3 ao;         //texture2D || vec3
+    float roughness; //texture2D || float
+    float metalness; //texture2D || float
+    vec3 F0;        //texture2D || float
+};
+
+struct Vars{
+    vec3 N;
+    vec3 V;
+    vec3 R;
+    vec3 L;
+    vec3 H;
+    float NdotV;
+    float NdotR;
+    float NdotL;float NdotH;float VdotH; float LdotH;
+    vec3 BRDF;
+};
+
+#import "rotationMatrix.inc"
+#import "saturate.inc"
+#import "bump.inc"
+#import "initVars.inc"
+#import "getSurfaceMaterial.inc"
+
+vec3 prem(vec3 R, float Roughness){
+    float a = Roughness * 5.0;
+
+    if ( a < 1.0)   return mix(textureCube(u_env_texture, R).rgb, textureCube(u_env_1_texture, R).rgb, a);
+    if ( a < 2.0)   return mix(textureCube(u_env_1_texture, R).rgb, textureCube(u_env_2_texture, R).rgb, a - 1.0);
+    if ( a < 3.0)   return mix(textureCube(u_env_2_texture, R).rgb, textureCube(u_env_3_texture, R).rgb, a - 2.0);
+    if ( a < 4.0)   return mix(textureCube(u_env_3_texture, R).rgb, textureCube(u_env_4_texture, R).rgb, a - 3.0);
+    if ( a < 5.0)   return mix(textureCube(u_env_4_texture, R).rgb, textureCube(u_env_5_texture, R).rgb, a - 4.0);
+
+    return textureCube(u_env_5_texture,R).xyz;
+}
+
+vec3 SPLIT_BRDF(vec3 R, Material mat, Vars vars){
+    float NdotV = max(dot(vars.N, vars.V),1.e-4);
+
+    //Diffuse Term
+    vec3 dir = (rotationMatrix(vec3(0,1,0), u_rotation) * vec4(vars.N,1.0)).xyz;
+    vec3 diffTerm =  mat.albedo * prem(dir,1.0);
+
+    //Specular Term
+    dir = (rotationMatrix(vec3(0,1,0), u_rotation) * vec4(R,1.0)).xyz;
+    vec3 Li = prem(dir,mat.roughness);
+    vec3 specTerm = Li * (mat.F0 * vars.BRDF.x + vars.BRDF.y);
+
+    return mat.emission + (specTerm + diffTerm) * mat.ao;
+}
+
+void main(){
+    Material mat = getSurfaceMaterial();
+    Vars vars = initVars();
+    vars.BRDF = texture2D(u_brdf_texture, vec2(mat.roughness, vars.NdotV)).xyz;
+    vec3 finalColor = vec3(1.0, 0.0, 1.0);
+
+
+    if(u_channel == 0){//Complete Render
+
+        mat.F0 = mix(vec3(0.04), mat.albedo, mat.metalness);
+        mat.albedo = mix(mat.albedo , vec3(0.0), mat.metalness);
+
+        finalColor = SPLIT_BRDF(vars.R, mat, vars);
+        finalColor = pow(finalColor, vec3(1.0/2.2));
+    }
+    else if(u_channel == 1){ finalColor = mat.albedo; }           //Display Albedo Channel Only
+    else if(u_channel == 2){ finalColor = vec3(mat.roughness); }  //Display Roughness Channel Only
+    else if(u_channel == 3){ finalColor = vec3(mat.metalness); }  //Display Metallic Channel Only
+    else if(u_channel == 4){ finalColor = vec3(mat.ao); }         //Display AO Channel Only
+    else if(u_channel == 5){ finalColor = vec3(vars.N); }         //Display Normal Channel Only
+    else if(u_channel == 6){ finalColor = vars.BRDF; }            //Preintegrated BRDF Only  
+    
+
+    gl_FragColor = vec4(finalColor, 1.0);
+}
+
+
+
+
+
+\brdf.vs
+//================================================================================================================================
+//  BRDF Preintegration
+//================================================================================================================================
+precision highp float;
+
+attribute vec3 a_vertex;
+attribute vec3 a_normal;
+attribute vec2 a_coord;
+
+#import "common.inc"
+
+void main(){
+    v_vertex = a_vertex;
+    v_coord  = a_coord;
+    vec3 position = v_vertex * 2.0 - vec3(1.0);
+    gl_Position = vec4(position,1.0);
+}
+
+\brdf.fs
+precision highp float;
+
+#define SAMPLES 1024
+
+#import "math_constants.inc"
+#import "common.inc"
+#import "hammersley.inc"
+#import "importanceSampleGGX.inc"
+#import "fresnel.inc"
+#import "ndf.inc"
+#import "ggx.inc"
+
+void main(){
+    float Roughness = v_coord.y;
+    float NdotV     = v_coord.x;
+
+    vec3 V;
+    V.x = sqrt(1.0 - NdotV * NdotV);//Sin
+    V.y = 0.0;
+    V.z = NdotV;                    //Cos
+
+    float A = 0.0;
+    float B = 0.0;
+
+    vec3  N = vec3(0.0, 0.0, 1.0);
+
+    const int NumSamples = SAMPLES;
+    for(int i = 0; i < NumSamples; i++){
+        //vec2 Xi = u_hammersley[i];
+        vec2 Xi = Hammersley(i, NumSamples);
+        vec3 H = ImportanceSampleGGX(Xi, Roughness, N);
+        vec3 L = 2.0 * dot(V,H) * H - V; //Reflected vector
+
+        float NdotL = clamp(L.z, 0.0, 1.0);
+        float NdotH = clamp(H.z, 0.0, 1.0);
+        float VdotH = clamp(dot(V, H), 0.0, 1.0);
+
+        if(NdotL > 0.0){
+            float G = G_Smith(Roughness, NdotV, NdotL);
+            float G_Vis = G * VdotH / ( NdotH * NdotV );
+
+            float Fc = pow(1.0 - VdotH, 5.0);
+
+            A += (1.0 - Fc) * G_Vis;
+            B += Fc * G_Vis;
+        }
+    }
+
+    vec2 result = vec2(A,B)/ float(NumSamples);
+
+    gl_FragColor = vec4(result, 0.0, 1.0);
+}
+
+
+
+
+\hammersley.inc
+float random(vec3 scale, float seed) { return fract(sin(dot(gl_FragCoord.xyz + seed, scale)) * 43758.5453 + seed);}
+vec2 RandomSamples(float seed) {
+    float u = random(vec3(12.9898, 78.233, 151.7182), seed);
+    float v = random(vec3(63.7264, 10.873, 623.6736), seed);
+    return vec2(u, v);
+}
+// Special fake Hammersley variant for WebGL and ESSL, since WebGL and ESSL do not support uint and bit operations
+vec2 Hammersley(const in int index, const in int numSamples){
+     vec2 r = fract(vec2(float(index) * 5.3983, float(int(int(2147483647.0) - index)) * 5.4427));
+     r += dot(r.yx, r.xy + vec2(21.5351, 14.3137));
+     return fract(vec2(float(index) / float(numSamples), (r.x * r.y) * 95.4337));
+ }
+
+\bump.inc
+//Javi Agenjo Snipet for Bump Mapping
+mat3 cotangent_frame(vec3 N, vec3 p, vec2 uv){
+    // get edge vectors of the pixel triangle
+    vec3 dp1 = dFdx( p );
+    vec3 dp2 = dFdy( p );
+    vec2 duv1 = dFdx( uv );
+    vec2 duv2 = dFdy( uv );
+
+    // solve the linear system
+    vec3 dp2perp = cross( dp2, N );
+    vec3 dp1perp = cross( N, dp1 );
+    vec3 T = dp2perp * duv1.x + dp1perp * duv2.x;
+    vec3 B = dp2perp * duv1.y + dp1perp * duv2.y;
+
+    // construct a scale-invariant frame
+    float invmax = inversesqrt( max( dot(T,T), dot(B,B) ) );
+    return mat3( T * invmax, B * invmax, N );
+}
+
+vec3 perturbNormal( vec3 N, vec3 V, vec2 texcoord, vec3 normal_pixel ){
+    #ifdef USE_POINTS
+    return N;
+    #endif
+
+    // assume N, the interpolated vertex normal and
+    // V, the view vector (vertex to eye)
+    //vec3 normal_pixel = texture2D(normalmap, texcoord ).xyz;
+    normal_pixel = normal_pixel * 255./127. - 128./127.;
+    mat3 TBN = cotangent_frame(N, V, texcoord);
+    return normalize(TBN * normal_pixel);
+}
+
+\importanceSampleGGX.inc
+//  http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf
+vec3 ImportanceSampleGGX( vec2 Xi, float Roughness, vec3 N ) {
+
+    float a = Roughness * Roughness;
+
+    float Phi = 2.0 * PI * Xi.x;
+
+    float CosTheta = sqrt( (1.0 - Xi.y) / ( 1.0 + (a * a - 1.0) * Xi.y ) );
+    float SinTheta = sqrt( 1.0 - CosTheta * CosTheta );
+
+    vec3 H;
+    H.x = SinTheta * cos( Phi );
+    H.y = SinTheta * sin( Phi );
+    H.z = CosTheta;
+
+    vec3 UpVector = abs(N.z) < 0.999999 ? vec3(0.0,0.0,1.0) : vec3(1.0,0.0,0.0);
+    vec3 TangentX = normalize( cross( UpVector, N ) );
+    vec3 TangentY = cross( N, TangentX );
+
+    // Tangent to world space
+    return TangentX * H.x + TangentY * H.y + N * H.z;
+}
+
+\prefilterEnvMap.inc
+vec3 PrefilterEnvMap(vec3 R, float Roughness){
+    vec3 N = R;
+    vec3 V = R;
+    vec3 PrefilteredColor = vec3(0.0);
+    float TotalWeight = 0.0;
+    const int NumSamples = SAMPLES;
+    vec3 dir;
+    for(int i = 0; i < NumSamples; i++){
+        vec2 Xi = Hammersley( i, NumSamples );
+        vec3 H  = ImportanceSampleGGX( Xi, Roughness, N );
+        vec3 L  = 2.0 * dot( V, H ) * H - V;
+        float NdotL = clamp( dot( N, L ), 0.0, 1.0 );
+        if(NdotL > 0.0){
+            dir = (rotationMatrix(vec3(0,1,0), u_rotation) * vec4(L,1.0)).xyz;
+            PrefilteredColor += NdotL * textureCubeLodEXT(u_env_texture, dir, 0.0).xyz;
+            TotalWeight += NdotL;
+        }
+    }
+    return PrefilteredColor / TotalWeight;
+}
+
+
+\fresnel.inc
+// ---------------------------------------------------------------
+// Fresnel Term : Amount of light reflected at grazing angles
+// ---------------------------------------------------------------
+vec3 Fresnel_Schlick(vec3 F0, float LdotH){
+    return F0 + (1.0 - F0) * pow(1.0 - LdotH,5.0);
+}
+vec3 Fresnel_Spherical(vec3 F0, float LdotH){
+    float power = (-5.55473 * LdotH - 6.98316) * LdotH;
+    return F0 + (1.0 - F0) * pow(2.0,power);
+}
+
+\ggx.inc
+// ---------------------------------------------------------------
+// Geometry Term : Geometry masking / shadowing due to microfacets
+// ---------------------------------------------------------------
+float GGX(float NdotV, float k){
+    return NdotV / (NdotV * (1.0 - k) + k);
+}
+float G_Smith(float roughness, float NdotV, float NdotL){
+    float k = pow((roughness + 1.0),2.0) / 8.0;
+    return GGX(NdotL, k) * GGX(NdotV, k);
+}
+
+\ndf.inc
+float NDF(float alpha, float NdotH){
+    float alpha2 = alpha * alpha;
+    float den = NdotH * NdotH * (alpha2 - 1.0) + 1.0;
+    return alpha2 / (PI * den * den);
+}
+
+\math_constants.inc
+#define PI     3.1415926535897932384626433832795
+#define PI2    (2.0*3.1415926535897932384626433832795)
+#define invPI  0.31830988618
+#define inv2PI 0.15915494309
+#define inv8PI 0.03978873577
+#define INV_LOG2 1.4426950408889634073599246810019
+
+\saturate.inc
+float saturate(float a){  return clamp(a, 0.0, 1.0);}
+vec2 saturate(vec2 a){    return vec2(saturate(a.x),saturate(a.y));   }
+vec3 saturate(vec3 a){    return vec3(saturate(a.xy),saturate(a.z));  }
+vec4 saturate(vec4 a){    return vec4(saturate(a.xyz),saturate(a.w)); }
+
+\rotationMatrix.inc
+mat4 rotationMatrix(vec3 axis, float angle)
+{
+    axis = normalize(axis);
+    float s = sin(angle);
+    float c = cos(angle);
+    float oc = 1.0 - c;
+    
+    return mat4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,
+                oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,
+                oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,
+                0.0,                                0.0,                                0.0,                                1.0);
+}
+
+
+
+
+
+\common.inc 
+uniform float u_time;
+uniform mat4  u_view;
+uniform mat4  u_viewprojection;
+uniform mat4  u_mvp;
+uniform mat4  u_model;
+varying vec3  v_vertex;
+varying vec3  v_normal;
+varying vec2  v_coord;
+
+
+\getSurfaceMaterial.inc
+Material getSurfaceMaterial(){
+    Material mat;
+    mat.albedo = u_albedo.xyz;
+    #ifdef albedo_map
+        mat.albedo = texture2D(u_albedo_texture, v_coord).xyz;
+        mat.albedo = pow(mat.albedo,vec3(2.2));
+    #endif
+    
+
+    mat.emission=    u_emission.xyz;
+    #ifdef emission_map
+        mat.emission = texture2D(u_emission_texture, v_coord).xyz;
+    #endif
+
+    mat.ao =    u_ao.xyz;
+    #ifdef ao_map
+        mat.ao = texture2D(u_ao_texture, v_coord).xyz;
+    #endif
+
+    mat.roughness =     u_roughness;
+    #ifdef roughness_map
+        mat.roughness = texture2D(u_roughness_texture, v_coord).x;
+    #endif
+
+    mat.metalness =    u_metalness;
+    #ifdef metalness_map
+        mat.metalness = texture2D(u_metalness_texture, v_coord).x;
+    #endif
+
+    return mat;
+}
+
+\initVars.inc
+Vars initVars(){
+    Vars vars;
+    vars.V = normalize(u_eye - v_vertex );
+    vars.N = v_normal;
+    #ifdef bump_map
+        vars.N = normalize(perturbNormal( vars.N, - vars.V, v_coord, texture2D(u_bump_texture, v_coord).xyz ));
+    #endif
+    vars.R = reflect(-vars.V, vars.N);
+    vars.NdotV = saturate(dot(vars.N,vars.V));
+    
+    return vars;
+}
+
+
+
+
+
+
+
+
+

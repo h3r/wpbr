@@ -1,0 +1,4 @@
+.vscode/*
+.idea/*
+lib/zipjs
+lib/zipjs/**

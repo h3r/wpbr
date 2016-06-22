@@ -1,0 +1,37 @@
+
+{
+    "cameras":[{
+        "eye":      [-1.1835134029388428, -0.02397305890917778, -0.4381606876850128],
+        "center":   [0.021014079451560974, -0.02003830298781395, -0.501126766204834],
+        "up":       [0,1,0]
+        }
+    ],
+    "materials":[
+        {"id":"cerberus","mat":{}}
+    ],
+    "nodes":[
+        {
+            "id":"Cerberus Shotgun", 
+            "mesh":"meshes/cerberus/cerberus.obj", 
+            "texture":"",
+            "config":{
+                "position": [0,0,0],
+                "rotation": [0,0,0],
+                "scale":    [0,0,0],
+                "children": [],
+                "uniforms": {}
+            },
+            "material":{
+                "id":"cerberus",
+                "mat":{
+                    "albedo":   "meshes/cerberus/textures/cerberus_a.png",
+                    "roughness":"meshes/cerberus/textures/cerberus_r.png",
+                    "metalness":"meshes/cerberus/textures/cerberus_m.png",
+                    "bump":     "meshes/cerberus/textures/cerberus_n.png",
+                    "ao":       "meshes/cerberus/textures/raw/cerberus_ao.png"
+                }
+            },
+            "shader":"pbr"
+        }
+    ]
+}

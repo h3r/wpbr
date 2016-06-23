@@ -7,7 +7,7 @@
         }
     ],
     "materials":[
-        {"id":"cerberus","mat":{}}
+        {"id":"cerberussd","mat":{}}
     ],
     "nodes":[
         {
@@ -22,7 +22,7 @@
                 "uniforms": {}
             },
             "material":{
-                "id":"cerberus",
+                "id":"cerberussd",
                 "mat":{
                     "albedo":   "meshes/cerberus/textures/sd/cerberus_a_SD.png",
                     "roughness":"meshes/cerberus/textures/sd/cerberus_r_SD.png",

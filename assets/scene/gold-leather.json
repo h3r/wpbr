@@ -24,11 +24,11 @@
             "material":{
                 "id":"gold-leather",
                 "mat":{
-                    "albedo":   "meshes/test-sphere/textures/gold-leather/test2_None_BaseColor_SD.png",
-                    "roughness":"meshes/test-sphere/textures/gold-leather/test2_None_Roughness_SD.png",
-                    "metalness":"meshes/test-sphere/textures/gold-leather/test2_None_Metallic_SD.png",
+                    "albedo":   "meshes/test-sphere/textures/gold-leather/test2_None_BaseColor.png",
+                    "roughness":"meshes/test-sphere/textures/gold-leather/test2_None_Roughness.png",
+                    "metalness":"meshes/test-sphere/textures/gold-leather/test2_None_Metallic.png",
                     "ao":       [1,1,1],
-                    "bump":"meshes/test-sphere/textures/gold-leather/test2_None_Normal_SD.png"
+                    "bump":"meshes/test-sphere/textures/gold-leather/test2_None_Normal.png"
                 }
             },
             "shader":"pbr"

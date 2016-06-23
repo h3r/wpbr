@@ -13,7 +13,7 @@ var Channel = 0;
 
 var Environment = 'helipad';
 var Rotate = 0;
-var Skybox = false;
+var Skybox = true;
 
 function init(dom_id){
     APP.placer  = document.getElementById(dom_id);

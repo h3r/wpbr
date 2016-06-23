@@ -24,7 +24,7 @@
             "material":{
                 "id":"cerberus",
                 "mat":{
-                    "albedo":   "meshes/cerberus/textures/cerberus_a.png",
+                    "albedo":   "meshes/cerberus/textures/sd/cerberus_a_SD.png",
                     "roughness":"meshes/cerberus/textures/cerberus_r.png",
                     "metalness":"meshes/cerberus/textures/cerberus_m.png",
                     "bump":     "meshes/cerberus/textures/cerberus_n.png",

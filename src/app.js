@@ -8,10 +8,10 @@ var APP = {
 };
 var materials = {};
  
-var Scene = 'cerberus';
+var Scene = 'cerberus_SD';
 var Channel = 0;
 
-var Environment = 'helipad';
+var Environment = 'helipad-sd';
 var Rotate = 0;
 var Skybox = true;
 
@@ -23,7 +23,7 @@ function init(dom_id){
     APP.placer.appendChild( APP.renderer.canvas );
     WB.trigger('Resize');
     setGUI();
-    setIOBindings();
+
     loadScene(Scene);
 }
 
@@ -32,9 +32,10 @@ WB.on('NewScene',function(scene){
     APP.scene = scene;
     APP.camera = scene.cameras[0];
     
-    
     //Preintegrate BRDF to 2D texture;
     preintegrateBRDF();
+    setIOBindings();
+
 
     //Update general usage uniforms
     scene.root.preRender = function(renderer, camera){

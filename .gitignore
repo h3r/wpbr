@@ -2,3 +2,5 @@
 .idea/*
 lib/zipjs
 lib/zipjs/**
+node_modules
+gulpfile.js

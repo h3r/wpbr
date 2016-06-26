@@ -26,7 +26,7 @@ function setGUI(){
     gui.add(window,'Skybox')
 
     
-
+/*
     //setEnvironment
    var obj = {
         number : 0,
@@ -35,5 +35,6 @@ function setGUI(){
     var controlKit = new ControlKit();
     var gui = controlKit.addPanel();
     //gui.addCheckbox(window,'Skybox');
+    */
 }
 

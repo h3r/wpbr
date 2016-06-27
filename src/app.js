@@ -12,7 +12,7 @@ var Scene = 'cerberus_SD';
 var Channel = 0;
 
 var Environment = 'helipad-sd';
-var Rotate = 0;
+var Rotate = 180;
 var Skybox = true;
 
 function init(dom_id){

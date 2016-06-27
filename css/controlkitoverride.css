@@ -1,0 +1,4 @@
+#controlKit .panel{
+    transition: height ease-in-out .15s !important;
+    height:281px;
+}

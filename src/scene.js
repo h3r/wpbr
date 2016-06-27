@@ -126,11 +126,11 @@ function parseScene(json, callback){
 //  Load Scene environment map for reflections and skybox
 //===================================================================================
 function loadEnv(asset,callback){
-    if(gl.textures[asset]){
+    /*if(gl.textures[asset]){
         if(callback)
             callback();
         return;
-    }
+    }*/
 
     var imageSources = [APP.renderer.assets_folder+'textures/'+asset+'/left.png'  ,
                         APP.renderer.assets_folder+'textures/'+asset+'/right.png' ,

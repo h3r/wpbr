@@ -174,14 +174,17 @@ var cubemapCam = new RD.Camera();
 cubemapCam.perspective( 90, 1, 0.01, 100000.0 );
 function preintegrateIrradiance(asset){
     for(var i = 1; i < 6; i++){
-        var id = asset+'_env_'+i;var tex = gl.textures[id];var Roughness = i/5,eye,dir,center,up,uniforms;
+        var id = asset+'_env_'+i;
+        var tex = gl.textures[id];
+        var Roughness = i/5,eye,dir,center,up,uniforms;
         if(!tex){
             tex = new GL.Texture(512,512, { texture_type: gl.TEXTURE_CUBE_MAP, minFilter: gl.NEAREST, magFilter: gl.NEAREST });
-        }
-        
+            console.log('new roughness texture created for:'+Environment)    
+    }
+        gl.textures[Environment].bind(0);
+        gl.disable(gl.DEPTH_TEST);
         tex.drawTo(function(texture, face){
-            if(face == 0){gl.textures[Environment].bind(0);}
-            
+
             eye = cubemapCam.position;
             dir = Texture.cubemap_camera_parameters[face].dir;
             center = vec3.add(vec3.create(),dir,eye);
@@ -197,10 +200,8 @@ function preintegrateIrradiance(asset){
                 'u_inv_viewprojection_matrix':mat4.invert($temp.mat4, cubemapCam._viewprojection_matrix)            
             };
             gl.shaders['_prem'].uniforms(uniforms).draw(Mesh.getScreenQuad(), gl.TRIANGLES);
-
-            if(face == 5){gl.textures[Environment].unbind(0);}
-            return;
         });
+        gl.textures[Environment].unbind(0);
         gl.textures[id] = tex;
 
     }

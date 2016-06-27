@@ -26,22 +26,36 @@ function init(dom_id){
 
     loadScene(Scene);
 }
-
+var texnodes = [];
 WB.on('NewScene',function(scene){
+    texnodes = [];
     APP.ctx.animate(false);
     APP.scene = scene;
     APP.camera = scene.cameras[0];
+    console.log('new scene');
+    var node = null;
+    for(var i = 1; i < 6; i++){
+        node = new RD.SceneNode();
+        node.setMesh( 'sphere' );
+        node.setTexture('color', Environment+'_env_'+i);
+        node.shader = '_cubetex';
+        node.size = [0.1,0.1,0.1];
+        node.position = [i*2 - 2, 5, 0];
+        texnodes.push(node);
+    }
     
     //Preintegrate BRDF to 2D texture;
     preintegrateBRDF();
     setIOBindings();
-
 
     //Update general usage uniforms
     scene.root.preRender = function(renderer, camera){
         renderer._uniforms['u_channel'] = Channel;
         renderer._uniforms['u_eye']     = APP.camera.position;
         renderer._uniforms['u_rotation']= Rotate * DEG2RAD;
+        texnodes.map(function(node,i){
+             node.textures.color = Environment+'_env_'+(i+1);
+        })
         drawSkybox();
     }
 
@@ -72,13 +86,11 @@ WB.on('NewScene',function(scene){
         APP.renderer.clear([0.0,0.0,0.0,0.0]);
         APP.ctx.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 
-        APP.renderer.render( APP.scene,  APP.camera );
-        
+        APP.renderer.render( APP.scene,  APP.camera , APP.scene._root.getAllChildren().concat(texnodes));
     }
 
     APP.ctx.onupdate = function(dt){
         updateIOBindings(dt);
-
     }
 
     gl.extensions["EXT_shader_texture_lod"] = gl.getExtension("EXT_shader_texture_lod");

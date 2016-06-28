@@ -34,22 +34,24 @@ function setGUI(){
             a.appendChild(canvas);
             var new_window = window.open();
             new_window.document.body.appendChild(a);
-            a.click();
+            //a.click();
 
             for(var i = 1; i < 6; i++){
-                console.log(Environment+'_env_'+i);
                 var texture = gl.textures[Environment+'_env_'+i];
                 if(!texture) return;
                 var canvas = texture.toCanvas();
+                canvas.style.width='20%';
+                canvas.style.margin='0.35%';
                 var a = document.createElement("a");
                 a.download = "prem_"+i+".png";
                 a.href = canvas.toDataURL();
                 a.title = "Download file"
+                a.appendChild(canvas);
                 new_window.document.body.appendChild(a);
-                a.click();
+                //a.click();
                 
             }
-            new_window.close();
+            //new_window.close();
         },
         'download pBRDF':function(){
             var texture = gl.textures['brdf_integrator'];

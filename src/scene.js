@@ -6,9 +6,11 @@ var scenes = {};
 var shaderfiles = {};
 var voidfunc = function(){};
 function loadScene(sceneFile){
+    addLoadIcon();
 
     var scenejson = null;
     var f1 = function(){
+        
         if(!scenes[sceneFile])
             HttpRequest('assets/scene/' + sceneFile.replace('.json','')+'.json',null,
             function(success){
@@ -48,6 +50,7 @@ function loadScene(sceneFile){
     }
     var f5 = function(){ 
         loadEnv(Environment,function(){
+            endLoadIcon();
             WB.trigger('NewScene',newScene);
         });
     }   
@@ -126,6 +129,7 @@ function parseScene(json, callback){
 //  Load Scene environment map for reflections and skybox
 //===================================================================================
 function loadEnv(asset,callback){
+    addLoadIcon();
     /*if(gl.textures[asset]){
         if(callback)
             callback();
@@ -142,8 +146,10 @@ function loadEnv(asset,callback){
         gl.textures[asset] = Texture.cubemapFromImages(images,{ minFilter : gl.LINEAR_MIPMAP_LINEAR});
         
         //Preintegrate Irradiance Map for Roughness levels
-        preintegrateIrradiance(asset);
-        
+        preintegrateIrradiance(asset,function(){
+            
+        });
+        endLoadIcon();
         if(callback)
             callback();
     });

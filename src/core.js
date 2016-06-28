@@ -42,7 +42,7 @@ function setIOBindings(){
 
         vec3.copy($temp.vec3,APP.camera._target);
         var d = vec3.distance(APP.camera._target, APP.camera.position);
-        APP.camera.moveLocal([0,0,  e.wheel < 0 ? _dt*2 : -_dt*2]);
+        APP.camera.moveLocal([0,0,  e.wheel < 0 ? _dt*20 : -_dt*20]);
         vec3.copy(APP.camera._target,$temp.vec3);
     };
     APP.ctx.onmousemove = function(e){
@@ -158,7 +158,7 @@ function preintegrateBRDF(){
     var id = 'brdf_integrator';
     var tex = gl.textures[id];
     if(!tex){
-        tex = new GL.Texture(512,512, { texture_type: gl.TEXTURE_2D, minFilter: gl.NEAREST, magFilter: gl.NEAREST });
+        tex = new GL.Texture(64,64, { texture_type: gl.TEXTURE_2D, minFilter: gl.NEAREST, magFilter: gl.NEAREST });
     }
     tex.drawTo(function(texture, face){
         gl.shaders['_brdf'].uniforms({}).draw(Mesh.getScreenQuad(), gl.TRIANGLES);
@@ -178,7 +178,7 @@ function preintegrateIrradiance(asset){
         var tex = gl.textures[id];
         var Roughness = i/5,eye,dir,center,up,uniforms;
         if(!tex){
-            tex = new GL.Texture(512,512, { texture_type: gl.TEXTURE_CUBE_MAP, minFilter: gl.NEAREST, magFilter: gl.NEAREST });
+            tex = new GL.Texture(256,256, { texture_type: gl.TEXTURE_CUBE_MAP, minFilter: gl.NEAREST, magFilter: gl.NEAREST });
             console.log('new roughness texture created for:'+Environment)    
     }
         gl.textures[Environment].bind(0);

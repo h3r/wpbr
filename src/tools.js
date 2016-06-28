@@ -46,3 +46,14 @@ function loadImages(imageSources, skyBoxImages, callback) {
         img.src = imageSources[i];
     }
 };
+
+var loadiconcount = 0;
+function addLoadIcon(){
+    document.getElementById('loading').style.opacity = 1.0;
+    loadiconcount++;
+}
+function endLoadIcon(){
+    loadiconcount--;
+    if(loadiconcount == 0)
+    document.getElementById('loading').style.opacity = 0.0;
+}

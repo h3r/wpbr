@@ -19,8 +19,13 @@ function init(dom_id){
     APP.placer  = document.getElementById(dom_id);
     APP.ctx     = GL.create({width:APP.placer.clientWidth, height:APP.placer.clientHeight, antialias:true, alpha:true});
     APP.renderer= new RD.Renderer(APP.ctx);
+    APP.renderer.canvas.addEventListener("webglcontextlost", function(event) {
+        event.preventDefault();
+        console.warn('context lost');
+    }, false);
     APP.renderer.setDataFolder('assets/');
     APP.placer.appendChild( APP.renderer.canvas );
+    
     WB.trigger('Resize');
     setGUI();
 
@@ -32,17 +37,7 @@ WB.on('NewScene',function(scene){
     APP.ctx.animate(false);
     APP.scene = scene;
     APP.camera = scene.cameras[0];
-    console.log('new scene');
-    var node = null;
-    for(var i = 1; i < 6; i++){
-        node = new RD.SceneNode();
-        node.setMesh( 'sphere' );
-        node.setTexture('color', Environment+'_env_'+i);
-        node.shader = '_cubetex';
-        node.size = [0.1,0.1,0.1];
-        node.position = [i*2 - 2, 5, 0];
-        texnodes.push(node);
-    }
+    
     
     //Preintegrate BRDF to 2D texture;
     preintegrateBRDF();
@@ -50,12 +45,32 @@ WB.on('NewScene',function(scene){
 
     //Update general usage uniforms
     scene.root.preRender = function(renderer, camera){
+        scene.root.getAllChildren().map(function(node){
+            if(Channel == 0){
+                if(node._shader)node.shader = node._shader;
+                delete node._shader;
+            }
+            /*Albedo*/
+            if(Channel == 1){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_tex';node.textures.display = node.textures.albedo;return;}
+            /*Roughness*/
+            if(Channel == 2){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_tex';node.textures.display = node.textures.roughness;return;}
+            /*Metalness*/
+            if(Channel == 3){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_tex';node.textures.display = node.textures.metalness;return;}
+            /*Ambient Occlusion*/
+            if(Channel == 4){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_tex';node.textures.display = node.textures.ao;return;}
+            /*Bump Mapping*/
+            if(Channel == 5){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_texbump';node.textures.display = node.textures.bump;return;}
+            /*Preintegrated BRDF*/
+            if(Channel == 6){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_texbrdf';node.textures.display = node.textures.brdf;return;}
+        });
+        
+        
+    
+
         renderer._uniforms['u_channel'] = Channel;
         renderer._uniforms['u_eye']     = APP.camera.position;
         renderer._uniforms['u_rotation']= Rotate * DEG2RAD;
-        texnodes.map(function(node,i){
-             node.textures.color = Environment+'_env_'+(i+1);
-        })
+
         drawSkybox();
     }
 
@@ -85,9 +100,9 @@ WB.on('NewScene',function(scene){
     APP.ctx.ondraw = function(){
         APP.renderer.clear([0.0,0.0,0.0,0.0]);
         APP.ctx.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
-
-        APP.renderer.render( APP.scene,  APP.camera , APP.scene._root.getAllChildren().concat(texnodes));
+        APP.renderer.render( APP.scene,  APP.camera , APP.scene._root.getAllChildren());
     }
+
 
     APP.ctx.onupdate = function(dt){
         updateIOBindings(dt);

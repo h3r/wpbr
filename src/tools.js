@@ -57,3 +57,39 @@ function endLoadIcon(){
     if(loadiconcount == 0)
     document.getElementById('loading').style.opacity = 0.0;
 }
+function hexToRgb(hex) {
+    var bigint = parseInt(hex, 16);
+    var r = (bigint >> 16) & 255;
+    var g = (bigint >> 8) & 255;
+    var b = bigint & 255;
+
+    return r + "," + g + "," + b;
+}
+
+var colortransform = vec3.fromValues(1/255,1/255,1/255);
+function parseColorInput(input){
+    var color = vec3.create();
+    if(typeof input == "string"){
+        input = hexToRgb(input.replace('#',''));
+        input = JSON.parse('{"color":['+input+']}');
+        input = input.color;
+    }
+    vec3.multiply(color, input, colortransform);
+    return color;
+}
+
+function drawLabel(placer,id,label,position,pinpos,size){
+    if(!_labels[id]){
+        var n = document.createElement('div');
+        n.id = id;
+        n.className = 'label';
+        n.style.position = 'absolute';
+        document.querySelector(placer).appendChild(n);
+        _labels[id] = id;
+    }
+    var m = document.getElementById(id);
+    m.innerHTML = label;
+    m.style.left =  (position[0] - m.clientWidth * 0.5)+'px';
+    m.style.top = position[1]+'px';
+    m.style['font-size'] = 16+'px';
+}

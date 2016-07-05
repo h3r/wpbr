@@ -3,7 +3,8 @@ var $temp = {
     vec3 : vec3.create(),
     vec4 : vec4.create(),
     mat3 : mat3.create(),
-    mat4 : mat4.create()
+    mat4 : mat4.create(),
+    obj  : {}
 }
 //===================================================================================
 //  Event Dispatcher implementing WhiteBoard software design pattern

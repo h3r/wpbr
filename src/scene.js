@@ -95,6 +95,7 @@ function parseScene(json, callback){
         node = new RD.SceneNode();
         node.configure( config.config || {} );
         node.id = config.id || node._uid;
+        if(config.mesh == 'sphere')config.mesh = 'subsphere'; 
         node.setMesh( config.mesh || 'cube' );
         if(config.texture)
             node.setTexture( 'albedo', config.texture || undefined);

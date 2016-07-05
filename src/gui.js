@@ -2,8 +2,8 @@
 //  GUI
 //===================================================================================
 function setGUI(){
-    var files = {"Cerberus HD":"cerberus","Cerberus SD":"cerberus_SD", "Gold-Leather":"gold-leather", "Sphere":"sphere", "Sphere Matrix":"matrix"}
-    var channels = {'All': 0, 'Albedo': 1, 'Roughness': 2, 'Metallic':3, 'Ambient Oclusion':4, 'Normal Map':5, 'Preintegrated BRDF': 6}
+    var files = {"Cerberus HD":"cerberus","Cerberus SD":"cerberus_SD", "Gold-Leather":"gold-leather", "Sphere":"sphere", "Sphere Matrix":"matrix"};
+    var channels = {'All': 0, 'Albedo': 1, 'Roughness': 2, 'Metallic':3, 'Ambient Oclusion':4, 'Normal Map':5, 'Preintegrated BRDF': 6, 'Only Diffuse':7, 'Only Specular':8};
     var envs = {"Helipad SD":"helipad-sd","Helipad HD":"helipad","Desert Highway":"highway","Stairs":"chelsea-stairs",'Milky way':"milkyway","Ocean 1":"ocean-one","Ocean 2":"ocean-two","TEST":"uv-testgrid"};
 
     var gui = new dat.GUI();
@@ -19,7 +19,11 @@ function setGUI(){
     var ctrl1 = gui.add(window, 'Environment', envs);
     ctrl1.onFinishChange(function(value){
         loadEnv(value);
-    })
+    });
+    gui.add(window, 'Skybox');
+    gui.addColor(window, 'Light 1 Color');
+    gui.addColor(window, 'Light 2 Color');
+
 
     gui.add(window, 'Rotate',0,360)
     var obj = { 

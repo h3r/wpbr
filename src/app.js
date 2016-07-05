@@ -14,6 +14,8 @@ var Channel = 0;
 var Environment = 'helipad-sd';
 var Rotate = 180;
 var Skybox = true;
+window['Light 1 Color'] = [0.0,0.0,0.0,1.0];
+window['Light 2 Color'] = [0.0,0.0,0.0,1.0];
 
 function init(dom_id){
     APP.placer  = document.getElementById(dom_id);
@@ -25,6 +27,7 @@ function init(dom_id){
     }, false);
     APP.renderer.setDataFolder('assets/');
     APP.placer.appendChild( APP.renderer.canvas );
+    gl.meshes['subsphere'] = new GL.Mesh.sphere({"subdivisions":128}); //mini patch for a concrete example
     
     WB.trigger('Resize');
     setGUI();
@@ -50,23 +53,18 @@ WB.on('NewScene',function(scene){
                 if(node._shader)node.shader = node._shader;
                 delete node._shader;
             }
-            /*Albedo*/
-            if(Channel == 1){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_tex';node.textures.display = node.textures.albedo;return;}
-            /*Roughness*/
-            if(Channel == 2){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_tex';node.textures.display = node.textures.roughness;return;}
-            /*Metalness*/
-            if(Channel == 3){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_tex';node.textures.display = node.textures.metalness;return;}
-            /*Ambient Occlusion*/
-            if(Channel == 4){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_tex';node.textures.display = node.textures.ao;return;}
-            /*Bump Mapping*/
-            if(Channel == 5){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_texbump';node.textures.display = node.textures.bump;return;}
-            /*Preintegrated BRDF*/
-            if(Channel == 6){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_texbrdf';node.textures.display = node.textures.brdf;return;}
+            $temp.obj = materials[node.material];
+            if(!$temp.obj) return;
+            /*Albedo*/                   if(Channel == 1){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_tex';node.textures.display = node.textures.albedo;return;}
+            /*Roughness*/           else if(Channel == 2){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_tex';node.textures.display = node.textures.roughness;return;}
+            /*Metalness*/           else if(Channel == 3){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_tex';node.textures.display = node.textures.metalness;return;}
+            /*Ambient Occlusion*/   else if(Channel == 4){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_tex';node.textures.display = node.textures.ao;return;}
+            /*Bump Mapping*/        else if(Channel == 5){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_texbump';node.textures.display = node.textures.bump;return;}
+            /*Preintegrated BRDF*/  else if(Channel == 6){node._shader = (node._shader)?node._shader:node.shader;node.shader = '_texbrdf';node.textures.display = node.textures.brdf;return;}
         });
         
-        
-    
-
+        renderer._uniforms['u_color1'] = parseColorInput(window['Light 1 Color']);
+        renderer._uniforms['u_color2'] = parseColorInput(window['Light 2 Color']);
         renderer._uniforms['u_channel'] = Channel;
         renderer._uniforms['u_eye']     = APP.camera.position;
         renderer._uniforms['u_rotation']= Rotate * DEG2RAD;

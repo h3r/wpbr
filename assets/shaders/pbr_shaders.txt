@@ -53,7 +53,6 @@ void main(){
     gl_Position = u_mvp * vec4(a_vertex,1.0);
 }
 \texbump.fs
-#extension GL_EXT_shader_texture_lod : enable
 #extension GL_OES_standard_derivatives : enable
 precision highp float;
 
@@ -90,7 +89,6 @@ void main(){
     gl_Position = u_mvp * vec4(a_vertex,1.0);
 }
 \texbrdf.fs
-#extension GL_EXT_shader_texture_lod : enable
 #extension GL_OES_standard_derivatives : enable
 precision highp float;
 
@@ -135,7 +133,6 @@ void main(){
     v_vertex = (rotationMatrix(vec3(0,1,0),u_rotation) * vec4(v_vertex,1.0)).xyz;
 }
 \prem.fs
-#extension GL_EXT_shader_texture_lod : enable
 #extension GL_OES_standard_derivatives : enable
 precision highp float;
 
@@ -232,7 +229,6 @@ void main(){
 }
 
 \pbr.fs
-#extension GL_EXT_shader_texture_lod : enable
 #extension GL_OES_standard_derivatives : enable
 
 precision highp float;
@@ -543,7 +539,7 @@ vec3 PrefilterEnvMap(vec3 R, float Roughness,vec3 V,vec3 N){
         float NdotL = clamp( dot( N, L ), 0.0, 1.0 );
         if(NdotL > 0.0){
             dir = (rotationMatrix(vec3(0,1,0), u_rotation) * vec4(L,1.0)).xyz;
-            PrefilteredColor += NdotL * textureCubeLodEXT(u_env_texture, dir, 0.0).xyz;
+            PrefilteredColor += NdotL * textureCube(u_env_texture, dir).xyz;
             TotalWeight += NdotL;
         }
     }

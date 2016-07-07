@@ -1,0 +1,36 @@
+{
+    "cameras":[{
+        "eye":      [0, 0, 5],
+        "center":   [0,0,0],
+        "up":       [0,1,0]
+        }
+    ],
+    "materials":[
+        {"id":"cracks","mat":{}}
+    ],
+    "nodes":[
+        {
+            "id":"cracks", 
+            "mesh":"meshes/sphere-cracks/sphere.obj", 
+            "texture":"",
+            "config":{
+                "position": [0,0,0],
+                "rotation": [0,0,0],
+                "scale":    [0,0,0],
+                "children": [],
+                "uniforms": {}
+            },
+            "material":{
+                "id":"cracks",
+                "mat":{
+                    "albedo":   "meshes/sphere-cracks/sphere_None_BaseColor.png",
+                    "roughness":"meshes/sphere-cracks/sphere_None_Roughness.png",
+                    "metalness":"meshes/sphere-cracks/sphere_None_Metallic.png",
+                    "bump":     "meshes/sphere-cracks/sphere_None_Normal.png",
+                    "ao":[1,1,1]
+                }
+            },
+            "shader":"pbr"
+        }
+    ]
+}

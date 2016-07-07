@@ -2,7 +2,7 @@
 //  GUI
 //===================================================================================
 function setGUI(){
-    var files = {"Cerberus HD":"cerberus","Cerberus SD":"cerberus_SD", "Gold-Leather":"gold-leather", "Sphere":"sphere", "Sphere Matrix":"matrix"};
+    var files = {"Cerberus HD":"cerberus","Cerberus SD":"cerberus_SD", "Gold-Leather":"gold-leather", "Sphere":"sphere-cracks", "Sphere Matrix":"matrix"};
     var channels = {'All': 0, 'Albedo': 1, 'Roughness': 2, 'Metallic':3, 'Ambient Oclusion':4, 'Normal Map':5, 'Preintegrated BRDF': 6, 'Only Diffuse':7, 'Only Specular':8};
     var envs = {"Helipad SD":"helipad-sd","Helipad HD":"helipad","Desert Highway":"highway","Stairs":"chelsea-stairs",'Milky way':"milkyway","Ocean 1":"ocean-one","Ocean 2":"ocean-two","TEST":"uv-testgrid"};
 
@@ -49,7 +49,7 @@ function setGUI(){
                 var a = document.createElement("a");
                 a.download = "prem_"+i+".png";
                 a.href = canvas.toDataURL();
-                a.title = "Download file"
+                a.title = "Download file"; 
                 a.appendChild(canvas);
                 new_window.document.body.appendChild(a);
                 //a.click();
@@ -70,8 +70,6 @@ function setGUI(){
             
             new_window.document.body.appendChild(a);
             new_window.focus();
-            a.click();
-            new_window.close();
         }
     };
     gui.add(obj,'download pBRDF');

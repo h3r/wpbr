@@ -159,7 +159,7 @@ function preintegrateBRDF(){
     var id = 'brdf_integrator';
     var tex = gl.textures[id];
     if(!tex){
-        tex = new GL.Texture(64,64, { texture_type: gl.TEXTURE_2D, minFilter: gl.NEAREST, magFilter: gl.NEAREST });
+        tex = new GL.Texture(128,128, { texture_type: gl.TEXTURE_2D, minFilter: gl.NEAREST, magFilter: gl.NEAREST });
     }
     tex.drawTo(function(texture, face){
         gl.shaders['_brdf'].uniforms({}).draw(Mesh.getScreenQuad(), gl.TRIANGLES);

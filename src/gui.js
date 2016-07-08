@@ -2,7 +2,7 @@
 //  GUI
 //===================================================================================
 function setGUI(){
-    var files = {"Cerberus HD":"cerberus","Cerberus SD":"cerberus_SD", "Gold-Leather":"gold-leather", "Sphere":"sphere-cracks", "Sphere Matrix":"matrix"};
+    var files = {"Cerberus HD":"cerberus","Cerberus SD":"cerberus_SD", "Gold-Leather":"gold-leather", "Rock":"rock", "Atorias Sword":"sword","Sphere Cracks":"sphere-cracks", "Sphere Matrix":"matrix", "Metalness Scale":"metalness", "Roughness Scale":"roughness"};
     var channels = {'All': 0, 'Albedo': 1, 'Roughness': 2, 'Metallic':3, 'Ambient Oclusion':4, 'Normal Map':5, 'Preintegrated BRDF': 6, 'Only Diffuse':7, 'Only Specular':8};
     var envs = {"Helipad SD":"helipad-sd","Helipad HD":"helipad","Desert Highway":"highway","Stairs":"chelsea-stairs",'Milky way':"milkyway","Ocean 1":"ocean-one","Ocean 2":"ocean-two","TEST":"uv-testgrid"};
 

@@ -1,0 +1,36 @@
+{
+    "cameras":[{
+        "eye":      [-22.632041931152344, 9.094335556030273, -11.548225402832031],
+        "center":   [-5.66690731048584, 8.687999725341797, 7.471621036529541],
+        "up":       [0,1,0]
+        }
+    ],
+    "materials":[
+        {"id":"sword","mat":{}}
+    ],
+    "nodes":[
+        {
+            "id":"sword", 
+            "mesh":"meshes/sword/Artorias_Sword.obj", 
+            "texture":"",
+            "config":{
+                "position": [0,0,0],
+                "rotation": [0.30,0,0.25],
+                "scale":    [0,0,0],
+                "children": [],
+                "uniforms": {}
+            },
+            "material":{
+                "id":"sword",
+                "mat":{
+                    "albedo":   "meshes/sword/Sword_albedo.jpg",
+                    "roughness":"meshes/sword/Sword_roughness.jpg",
+                    "metalness":"meshes/sword/Sword_metallic.jpg",
+                    "bump":     "meshes/sword/Sword_normal.jpg",
+                    "ao":[1,1,1]
+                }
+            },
+            "shader":"pbr"
+        }
+    ]
+}

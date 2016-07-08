@@ -1,0 +1,31 @@
+
+{
+    "cameras":[{
+        "eye":      [0.09569467604160309, 7.342815399169922, 13.805513381958008],
+        "center":   [0,0,0],
+        "up":       [0,1,0]
+        }
+    ],
+    "materials":[
+        {"id":"metalness","mat":{
+            "albedo":   [1,0.05,0.05],
+            "ao":       [1,1,1]
+            
+        }}
+    ],
+    "nodes":[
+
+
+        {"id":"sphere","mesh":"sphere","config":{"position": [-10,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"metalness","mat":{"roughness": 0.15,"metalness": 0.0}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [ -8,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"metalness","mat":{"roughness": 0.15,"metalness": 0.1}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [ -6,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"metalness","mat":{"roughness": 0.15,"metalness": 0.2}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [ -4,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"metalness","mat":{"roughness": 0.15,"metalness": 0.3}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [ -2,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"metalness","mat":{"roughness": 0.15,"metalness": 0.4}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [  0,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"metalness","mat":{"roughness": 0.15,"metalness": 0.5}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [  2,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"metalness","mat":{"roughness": 0.15,"metalness": 0.6}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [  4,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"metalness","mat":{"roughness": 0.15,"metalness": 0.7}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [  6,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"metalness","mat":{"roughness": 0.15,"metalness": 0.8}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [  8,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"metalness","mat":{"roughness": 0.15,"metalness": 0.9}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [ 10,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"metalness","mat":{"roughness": 0.15,"metalness": 1.0}},"shader":"pbr"}
+    ]
+}

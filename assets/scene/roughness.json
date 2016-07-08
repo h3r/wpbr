@@ -1,0 +1,31 @@
+
+{
+    "cameras":[{
+        "eye":      [0.09569467604160309, 7.342815399169922, 13.805513381958008],
+        "center":   [0,0,0],
+        "up":       [0,1,0]
+        }
+    ],
+    "materials":[
+        {"id":"roughness","mat":{
+            "albedo":   [0.85,0.85,0.85],
+            "ao":       [1,1,1]
+            
+        }}
+    ],
+    "nodes":[
+
+
+        {"id":"sphere","mesh":"sphere","config":{"position": [-10,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 0.0,"metalness": 0.85}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [ -8,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 0.1,"metalness": 0.85}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [ -6,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 0.2,"metalness": 0.85}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [ -4,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 0.3,"metalness": 0.85}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [ -2,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 0.4,"metalness": 0.85}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [  0,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 0.5,"metalness": 0.85}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [  2,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 0.6,"metalness": 0.85}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [  4,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 0.7,"metalness": 0.85}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [  6,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 0.8,"metalness": 0.85}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [  8,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"metalness","mat":{"roughness": 0.9,"metalness": 0.85}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [ 10,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 1.0,"metalness": 0.85}},"shader":"pbr"}
+    ]
+}

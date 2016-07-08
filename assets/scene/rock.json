@@ -1,0 +1,36 @@
+{
+    "cameras":[{
+        "eye":      [5.355296611785889, 6.506354331970215, -9.024673461914062],
+        "center":   [1.3997471332550049, -0.7502295970916748, -0.48137447237968445],
+        "up":       [0,1,0]
+        }
+    ],
+    "materials":[
+        {"id":"rock","mat":{}}
+    ],
+    "nodes":[
+        {
+            "id":"rock", 
+            "mesh":"meshes/rock/DemoRock_OBJ.obj", 
+            "texture":"",
+            "config":{
+                "position": [0,0,0],
+                "rotation": [0,0,0],
+                "scale":    [0,0,0],
+                "children": [],
+                "uniforms": {}
+            },
+            "material":{
+                "id":"rock",
+                "mat":{
+                    "albedo":   "meshes/rock/DemoRock_Dif.png",
+                    "roughness":"meshes/rock/DemoRock_Rough.png",
+                    "metalness": 0.03,
+                    "bump":     "meshes/rock/DemoRock_Nrm.png",
+                    "ao":[1,1,1]
+                }
+            },
+            "shader":"pbr"
+        }
+    ]
+}

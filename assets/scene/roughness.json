@@ -25,7 +25,7 @@
         {"id":"sphere","mesh":"sphere","config":{"position": [  2,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 0.6,"metalness": 0.85}},"shader":"pbr"},
         {"id":"sphere","mesh":"sphere","config":{"position": [  4,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 0.7,"metalness": 0.85}},"shader":"pbr"},
         {"id":"sphere","mesh":"sphere","config":{"position": [  6,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 0.8,"metalness": 0.85}},"shader":"pbr"},
-        {"id":"sphere","mesh":"sphere","config":{"position": [  8,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"metalness","mat":{"roughness": 0.9,"metalness": 0.85}},"shader":"pbr"},
+        {"id":"sphere","mesh":"sphere","config":{"position": [  8,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 0.9,"metalness": 0.85}},"shader":"pbr"},
         {"id":"sphere","mesh":"sphere","config":{"position": [ 10,0,0],"rotation": [0,0,0],"scale":    [0,0,0],"children": [],"uniforms": {}},"material":{"id":"roughness","mat":{"roughness": 1.0,"metalness": 0.85}},"shader":"pbr"}
     ]
 }

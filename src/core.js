@@ -33,7 +33,7 @@ function setIOBindings(){
     var mouse = [0,0];
     APP.ctx.captureKeys(true,false);
     APP.ctx.onkey = function(e){
-        if(APP.ctx.keys["20"]){ speed = (speed == 1.0)? 0.1 : 1.0; }
+        if(APP.ctx.keys["20"]){ speed = (speed == 0.75)? 0.25 : 0.75; }
         if(APP.ctx.keys["Q"]) { autorbit = (autorbit)? false : true;}
         if(APP.ctx.keys['96']){ var hit = testCollision(mouse[0],mouse[1]); if(hit) APP.camera._target = hit.hit;}
     }; 
@@ -43,7 +43,7 @@ function setIOBindings(){
 
         vec3.copy($temp.vec3,APP.camera._target);
         var d = vec3.distance(APP.camera._target, APP.camera.position);
-        APP.camera.moveLocal([0,0,  e.wheel < 0 ? _dt*20 : -_dt*20]);
+        APP.camera.moveLocal([0,0,  e.wheel < 0 ? _dt*2 : -_dt*2]);
         vec3.copy(APP.camera._target,$temp.vec3);
     };
     APP.ctx.onmousemove = function(e){

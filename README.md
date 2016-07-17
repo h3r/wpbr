@@ -9,5 +9,7 @@ La ubicuidad de la web, la evolución del motor de JavaScript en los navegadores
 El objetivo de este proyecto es portar un render que implemente la técnica de PBR al entorno web mediante el uso de JavaScript y la API WebGL, haciendo uso de diferentes métodos de optimización además de los ya mencionados. 
 
 ---
+![](http://i.imgur.com/9bxNCWx.jpg)
 
 [**Slides**](https://docs.google.com/presentation/d/1DecL4Y1LLr9zoxQ8h8SGgw2ukbYwAwG5GLKAOeKb--c/edit?usp=sharing) | [**Notas**](http://h3r.github.io/wpbr/) | Demo: [**h3r.github.io/wpbr**](http://h3r.github.io/wpbr/)
+

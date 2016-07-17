@@ -357,16 +357,15 @@ void main(){
     mat.roughness = max(mat.roughness, 0.01);
     mat.metalness = min(mat.metalness, 0.99);
     mat.F0 = mix(vec3(0.04), mat.albedo, mat.metalness);
-    mat.albedo = mix(mat.albedo , vec3(0.0), mat.metalness) * mat.ao;
+    mat.albedo = mix(mat.albedo , vec3(0.0), mat.metalness);
     
     //Calculate Point Light contribution
-     
     vec3 L = vec3(-500.725311279296875, 200.280288696289062, 120.252925872802734);
     L = (rotationMatrix(vec3(0,1,0), -u_rotation) * vec4(L,1.0)).xyz;
-
     finalColor += DIRECT_BRDF(L, mat, vars) * u_color1;
     finalColor += DIRECT_BRDF(-L, mat, vars) * u_color2;
 
+    mat.albedo *= mat.ao;
     //Calculate Environment Light Contribution
     finalColor += SPLIT_BRDF(vars.R, mat, vars);
     finalColor = pow(finalColor, vec3(1.0/2.2));
@@ -414,40 +413,30 @@ precision highp float;
 void main(){
     float Roughness = v_coord.y;
     float NdotV     = v_coord.x;
-
     vec3 V;
     V.x = sqrt(1.0 - NdotV * NdotV);//Sin
     V.y = 0.0;
     V.z = NdotV;                    //Cos
-
     float A = 0.0;
     float B = 0.0;
-
     vec3  N = vec3(0.0, 0.0, 1.0);
-
     const int NumSamples = SAMPLES;
     for(int i = 0; i < NumSamples; i++){
         vec2 Xi = Hammersley(i, NumSamples);
         vec3 H = ImportanceSampleGGX(Xi, Roughness, N);
         vec3 L = 2.0 * dot(V,H) * H - V; //Reflected vector
-
         float NdotL = clamp(L.z, 0.0, 1.0);
         float NdotH = clamp(H.z, 0.0, 1.0);
         float VdotH = clamp(dot(V, H), 0.0, 1.0);
-
         if(NdotL > 0.0){
             float G = G_Smith(Roughness, NdotV, NdotL);
             float G_Vis = G * VdotH / ( NdotH * NdotV );
-
             float Fc = pow(1.0 - VdotH, 5.0);
-
             A += (1.0 - Fc) * G_Vis;
             B += Fc * G_Vis;
         }
     }
-
     vec2 result = vec2(A,B)/ float(NumSamples);
-
     gl_FragColor = vec4(result, 0.0, 1.0);
 }
 
@@ -503,6 +492,7 @@ vec3 perturbNormal( vec3 N, vec3 V, vec2 texcoord, vec3 normal_pixel ){
 
 \importanceSampleGGX.inc
 //  http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf
+
 vec3 ImportanceSampleGGX( vec2 Xi, float Roughness, vec3 N ) {
 
     float a = Roughness * Roughness;
@@ -562,6 +552,7 @@ vec3 Fresnel_Spherical(vec3 F0, float LdotH){
 }
 
 \ggx.inc
+
 // ---------------------------------------------------------------
 // Geometry Term : Geometry masking / shadowing due to microfacets
 // ---------------------------------------------------------------
@@ -569,12 +560,12 @@ float GGX(float NdotV, float k){
     return NdotV / (NdotV * (1.0 - k) + k);
 }
 float G_Smith(float roughness, float NdotV, float NdotL){
-    //float k = pow((roughness + 1.0),2.0) / 8.0; //only for analytic light sources
     float k = (roughness )*(roughness ) / 2.0;
     return GGX(NdotL, k) * GGX(NdotV, k);
 }
 
 \ndf.inc
+
 float NDF(float alpha, float NdotH){
     float alpha2 = alpha * alpha;
     float den = NdotH * NdotH * (alpha2 - 1.0) + 1.0;

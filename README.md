@@ -10,7 +10,7 @@ El objetivo de este proyecto es portar un render que implemente la técnica de P
 
 ---
 
-[**Slides**](https://drive.google.com/file/d/0B_wn5NANTpbzMndpYjFzeWJNQzg/view?usp=sharing) | [**Notas**](http://h3r.github.io/wpbr/) | Demo: [**h3r.github.io/wpbr**](http://h3r.github.io/wpbr/)
+[**Slides**](https://drive.google.com/file/d/0B_wn5NANTpbzMndpYjFzeWJNQzg/view?usp=sharing) | [**Notes**](https://drive.google.com/file/d/0BwcYGG6SdjyMZkJDYW1sSjBjdDQ/view?usp=sharing) | Demo: [**h3r.github.io/wpbr**](http://h3r.github.io/wpbr/)
 
 ![](http://i.imgur.com/9bxNCWx.jpg)
 

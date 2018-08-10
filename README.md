@@ -14,6 +14,5 @@ El objetivo de este proyecto es portar un render que implemente la técnica de P
 
 ![](http://i.imgur.com/9bxNCWx.jpg)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/K-WRY8MKHvk" frameborder="0" allowfullscreen></iframe>
-
-
+video demo:
+[![Video](https://img.youtube.com/vi/K-WRY8MKHvk/0.jpg)](http://www.youtube.com/watch?v=K-WRY8MKHvk)

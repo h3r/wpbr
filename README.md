@@ -1,5 +1,7 @@
 # WPBR: Iluminación Fotorrealista PBR en la web con WebGL
 
+![image](http://i.imgur.com/9bxNCWx.jpg)
+
 Physically Based Rendering (PBR) es una técnica avanzada de iluminación foto-realista  que tiene como fin la simulación más precisa sobre el comportamiento de la luz, en contraposición con técnicas como Blinn o  Phong shading, cuando esta interactúa con los diferentes materiales de una escena. 
 
 Existen técnicas como “image based lighting”(IBL) o diferentes modelos del BRDF que permiten aproximar el resultado final a un coste menor, contraponiendo un cierto nivel de precisión en los resultados y pudiendo así llevar a cabo este algoritmo a velocidades de renderizado interactivas. 
@@ -10,9 +12,6 @@ El objetivo de este proyecto es portar un render que implemente la técnica de P
 
 ---
 
-[**Slides**](https://drive.google.com/file/d/0B_wn5NANTpbzMndpYjFzeWJNQzg/view?usp=sharing) | [**Notes**](https://drive.google.com/file/d/0BwcYGG6SdjyMZkJDYW1sSjBjdDQ/view?usp=sharing) | Demo: [**h3r.github.io/wpbr**](http://h3r.github.io/wpbr/)
+[**Slides**](https://drive.google.com/file/d/0B_wn5NANTpbzMndpYjFzeWJNQzg/view?usp=sharing) | [**Notes**](https://drive.google.com/file/d/0BwcYGG6SdjyMZkJDYW1sSjBjdDQ/view?usp=sharing) | [**Video**](http://www.youtube.com/watch?v=K-WRY8MKHvk) | [**Demo**](http://h3r.github.io/wpbr/) 
 
-![](http://i.imgur.com/9bxNCWx.jpg)
 
-video demo:
-[![Video](https://img.youtube.com/vi/K-WRY8MKHvk/0.jpg)](http://www.youtube.com/watch?v=K-WRY8MKHvk)
